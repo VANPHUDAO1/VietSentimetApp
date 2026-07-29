@@ -1,0 +1,7 @@
+streamlit>=1.36
+torch>=2.2
+transformers>=4.41
+py-vncorenlp>=0.1.4
+emoji>=2.11
+underthesea>=6.8.0
+pandas>=2.0

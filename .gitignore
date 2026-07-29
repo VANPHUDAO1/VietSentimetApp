@@ -1,0 +1,23 @@
+# Checkpoint model — quá nặng để push lên Git, chia sẻ qua Drive/Release thay vì commit
+checkpoints/**/*.pt
+checkpoints/**/*.bin
+checkpoints/**/*.safetensors
+checkpoints/**/tokenizer/
+checkpoints/**/vocab.json
+checkpoints/**/config.json
+checkpoints/**/inference_config.json
+
+# VnCoreNLP jar + models (tải riêng, không commit)
+vncorenlp/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
