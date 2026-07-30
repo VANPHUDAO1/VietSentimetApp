@@ -11,18 +11,43 @@ def _set_sample_text(sample: str):
 
 
 def render_input_panel() -> str:
-    st.subheader("Nhập câu cần phân tích")
+    st.markdown(
+        """
+        <div style="background:linear-gradient(135deg,#eff6ff,#eef2ff);padding:14px 16px;border-radius:16px;border:1px solid #dbeafe;margin-bottom:10px;">
+            <div style="font-size:1.1rem;font-weight:700;color:#1e3a8a;">📝 Nhập câu cần phân tích</div>
+            <div style="font-size:0.9rem;color:#475569;margin-top:4px;">Chọn nhanh một câu mẫu hoặc tự nhập câu tiếng Việt của bạn.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.caption("Hoặc chọn nhanh 1 câu mẫu:")
-    cols = st.columns(len(SAMPLE_SENTENCES))
-    for col, sample in zip(cols, SAMPLE_SENTENCES):
-        short_label = sample[:12] + "…"
-        col.button(short_label, help=sample, on_click=_set_sample_text, args=(sample,))
+    st.markdown(
+        "<div style='margin-bottom:8px;'><strong>Ví dụ nhanh:</strong></div>",
+        unsafe_allow_html=True,
+    )
+    st.caption("Chọn một câu mẫu từ danh sách bên dưới để chèn vào ô nhập.")
 
+    sample_options = [sample["text"] for sample in SAMPLE_SENTENCES]
+    selected_sample = st.selectbox(
+        "Câu mẫu",
+        sample_options,
+        index=0,
+        key="sample_selectbox",
+    )
+
+    if selected_sample:
+        selected_text = selected_sample
+        if st.button("Chèn câu mẫu", use_container_width=True):
+            st.session_state.input_text_area = selected_text
+
+    st.markdown(
+        "<div style='margin-top:8px;'><strong>Câu tiếng Việt:</strong></div>",
+        unsafe_allow_html=True,
+    )
     text = st.text_area(
-        "Câu tiếng Việt:",
+        "",
         placeholder="Ví dụ: Giảng viên dạy rất nhiệt tình.",
-        height=100,
+        height=140,
         key="input_text_area",
     )
     return text

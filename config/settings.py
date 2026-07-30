@@ -41,11 +41,14 @@ LABEL_DISPLAY = {"negative": "Tiêu cực", "positive": "Tích cực"}
 LABEL_COLOR = {"negative": "#e74c3c", "positive": "#2ecc71"}
 
 SAMPLE_SENTENCES = [
-    "Giảng viên dạy rất nhiệt tình và dễ hiểu.",
-    "Môn học này chán quá, chẳng học được gì cả.",
-    "Ừ thì cũng được, không có gì đặc biệt.",
-    "Thầy dạy hay lắm... haha đùa đấy, ngủ suốt buổi luôn.",  # sarcasm
-    "Cô dạy hơi khó hiểu nma vẫn oke á ạ.",  # teencode
+    {"label": "Nhiệt tình", "text": "Giảng viên dạy rất nhiệt tình và dễ hiểu."},
+    {"label": "Chán", "text": "Môn học này chán quá, chẳng học được gì cả."},
+    {"label": "Bình thường", "text": "Ừ thì cũng được, không có gì đặc biệt."},
+    {
+        "label": "Sarcasm",
+        "text": "Thầy dạy hay lắm... haha đùa đấy, ngủ suốt buổi luôn.",
+    },
+    {"label": "Teencode", "text": "Cô dạy hơi khó hiểu nma vẫn oke á ạ."},
 ]
 
 LATENCY_WARNING_MS = {

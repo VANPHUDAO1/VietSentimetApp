@@ -11,7 +11,12 @@ def render_result(result: PredictionResult, device: str):
     color = LABEL_COLOR.get(result.label, "#333")
 
     st.markdown(
-        f"### Kết quả: <span style='color:{color}'>{label_vi}</span>",
+        f"""
+        <div class="result-card">
+            <div class="result-label" style="color:{color};">{label_vi}</div>
+            <div class="result-meta">Độ tin cậy: <strong>{result.confidence:.1%}</strong></div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
     st.metric("Độ tin cậy", f"{result.confidence:.1%}")
