@@ -11,6 +11,7 @@ class PredictionResult:
     probs: dict  # probability distribution over labels
     preprocessing_ms: float
     inference_ms: float
+    processed_text: str
 
 
 @dataclass

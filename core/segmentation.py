@@ -1,7 +1,11 @@
 """VnCoreNLP segmentation and environment checks."""
 
 import shutil
+import streamlit as st
 from functools import lru_cache
+import threading
+
+_segmenter_lock = threading.Lock()
 
 from config.settings import VNCORENLP_DIR
 
@@ -30,7 +34,7 @@ def check_environment() -> tuple[bool, str]:
     return True, ""
 
 
-@lru_cache(maxsize=1)
+@st.cache_resource(show_spinner=False)
 def get_segmenter():
     """Lazy-load the VnCoreNLP segmenter and raise friendly errors if unavailable."""
     if not check_java_available():
@@ -45,9 +49,24 @@ def get_segmenter():
             "Vui lòng tải VnCoreNLP-1.2.jar + models/ và đặt đúng đường dẫn."
         )
 
-    import py_vncorenlp
+    with _segmenter_lock:
+        print("========== CREATE SEGMENTER ==========")
+        import py_vncorenlp
 
-    return py_vncorenlp.VnCoreNLP(annotators=["wseg"], save_dir=str(VNCORENLP_DIR))
+        try:
+            segmenter = py_vncorenlp.VnCoreNLP(
+                annotators=["wseg"], save_dir=str(VNCORENLP_DIR)
+            )
+        except Exception as e:
+            if "already running" in str(e).lower():
+                raise EnvironmentError_VnCoreNLP(
+                    "JVM đã được khởi tạo trước đó trong process này nhưng bước "
+                    "load VnCoreNLP bị lỗi giữa chừng... Vui lòng dừng hẳn Streamlit "
+                    "(Ctrl+C) rồi chạy lại `streamlit run app.py`."
+                ) from e
+            raise
+        print("========== CREATED ==========")
+        return segmenter
 
 
 def segment_text(text: str) -> str:

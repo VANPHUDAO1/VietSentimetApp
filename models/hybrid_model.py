@@ -2,11 +2,12 @@
 
 import json
 import time
+from pathlib import Path
 
 import torch
 import torch.nn as nn
 
-from config.settings import LABELS
+from config.settings import LABELS, PHOBERT_DIR
 from core.preprocessing_pipeline import preprocess
 from models.base import ModelBundle, PredictionResult
 
@@ -16,7 +17,7 @@ class PhoBERT_BiLSTM_Classifier(nn.Module):
 
     def __init__(
         self,
-        model_name: str = "vinai/phobert-base",
+        model_name: str | None = None,
         hidden_dim: int = 256,
         num_classes: int = 2,
         dropout_prob: float = 0.1,
@@ -25,11 +26,15 @@ class PhoBERT_BiLSTM_Classifier(nn.Module):
         super().__init__()
         from transformers import AutoConfig, AutoModel
 
-        config = AutoConfig.from_pretrained(model_name)
+        config = AutoConfig.from_pretrained(model_name, local_files_only=True)
         if num_layers_used is not None:
             config.num_hidden_layers = num_layers_used
 
-        self.phobert = AutoModel.from_pretrained(model_name, config=config)
+        self.phobert = AutoModel.from_pretrained(
+            model_name,
+            config=config,
+            local_files_only=True,
+        )
         for param in self.phobert.parameters():
             param.requires_grad = False
 
@@ -60,13 +65,24 @@ def load_hybrid(
     """Load hybrid checkpoint, tokenizer, and config."""
     from transformers import AutoTokenizer
 
+    from transformers import AutoTokenizer
+
     with open(f"{checkpoint_dir}/config.json", encoding="utf-8") as f:
         cfg = json.load(f)
 
-    tokenizer = AutoTokenizer.from_pretrained(f"{checkpoint_dir}/tokenizer")
+    tokenizer = AutoTokenizer.from_pretrained(
+        str(Path(checkpoint_dir) / "tokenizer"),
+        local_files_only=True,
+    )
+
+    phobert_name = str(PHOBERT_DIR)
+    if not PHOBERT_DIR.exists():
+        raise FileNotFoundError(
+            f"PhoBERT checkpoint directory not found: {PHOBERT_DIR}"
+        )
 
     model = PhoBERT_BiLSTM_Classifier(
-        model_name=cfg.get("phobert_name", "vinai/phobert-base"),
+        model_name=phobert_name,
         hidden_dim=cfg.get("hidden_dim", 256),
         num_classes=cfg.get("num_classes", 2),
         dropout_prob=cfg.get("dropout_prob", 0.1),
@@ -121,4 +137,5 @@ def predict_hybrid(text: str, bundle: ModelBundle) -> PredictionResult:
         probs={LABELS[i]: float(p) for i, p in enumerate(probs)},
         preprocessing_ms=(t1 - t0) * 1000,
         inference_ms=(t2 - t1) * 1000,
+        processed_text=result.cleaned_text,
     )

@@ -132,8 +132,9 @@ if st.button("🔍 Phân tích", type="primary", use_container_width=True):
                 <div style="background:white;padding:24px 28px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,0.2);min-width:320px;">
                     <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">⏳ Đang xử lý...</div>
                     <div style="margin-top:10px;color:#475569;">1. Kiểm tra đầu vào</div>
-                    <div style="margin-top:6px;color:#475569;">2. Tải mô hình và chuẩn bị thiết bị</div>
-                    <div style="margin-top:6px;color:#475569;">3. Thực hiện phân tích cảm xúc</div>
+                    <div style="margin-top:6px;color:#475569;">2. Tải model</div>
+                    <div style="margin-top:6px;color:#475569;">3. Tiền xử lý</div>
+                    <div style="margin-top:6px;color:#475569;">4. Suy luận</div>
                 </div>
             </div>
             """,
@@ -146,8 +147,9 @@ if st.button("🔍 Phân tích", type="primary", use_container_width=True):
                     <div style="background:white;padding:24px 28px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,0.2);min-width:320px;">
                         <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">⏳ Đang xử lý...</div>
                         <div style="margin-top:10px;color:#475569;">✅ Kiểm tra đầu vào hoàn tất</div>
-                        <div style="margin-top:6px;color:#475569;">2. Tải mô hình và chuẩn bị thiết bị</div>
-                        <div style="margin-top:6px;color:#475569;">3. Thực hiện phân tích cảm xúc</div>
+                        <div style="margin-top:6px;color:#475569;">2. Tải model</div>
+                        <div style="margin-top:6px;color:#475569;">3. Tiền xử lý</div>
+                        <div style="margin-top:6px;color:#475569;">4. Suy luận</div>
                     </div>
                 </div>
                 """,
@@ -160,21 +162,39 @@ if st.button("🔍 Phân tích", type="primary", use_container_width=True):
                     <div style="background:white;padding:24px 28px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,0.2);min-width:320px;">
                         <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">⏳ Đang xử lý...</div>
                         <div style="margin-top:10px;color:#475569;">✅ Kiểm tra đầu vào hoàn tất</div>
-                        <div style="margin-top:6px;color:#475569;">✅ Tải mô hình và chuẩn bị thiết bị xong</div>
-                        <div style="margin-top:6px;color:#475569;">3. Thực hiện phân tích cảm xúc</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Tải model</div>
+                        <div style="margin-top:6px;color:#475569;">3. Tiền xử lý</div>
+                        <div style="margin-top:6px;color:#475569;">4. Suy luận</div>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
             predictor = get_predictor(model_name)
+            progress_placeholder.markdown(
+                """
+                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;">
+                    <div style="background:white;padding:24px 28px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,0.2);min-width:320px;">
+                        <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">⏳ Đang xử lý...</div>
+                        <div style="margin-top:10px;color:#475569;">✅ Kiểm tra đầu vào hoàn tất</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Tải model</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Tiền xử lý</div>
+                        <div style="margin-top:6px;color:#475569;">4. Suy luận</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
             result = predictor(text, bundle)
             progress_placeholder.markdown(
                 """
                 <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;">
                     <div style="background:white;padding:24px 28px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,0.2);min-width:320px;">
-                        <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">✅ Hoàn tất</div>
-                        <div style="margin-top:10px;color:#475569;">Đã xử lý xong câu của bạn.</div>
+                        <div style="font-size:1.05rem;font-weight:700;color:#1d4ed8;">⏳ Đang xử lý...</div>
+                        <div style="margin-top:10px;color:#475569;">✅ Kiểm tra đầu vào hoàn tất</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Tải model</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Tiền xử lý</div>
+                        <div style="margin-top:6px;color:#475569;">✅ Suy luận</div>
                     </div>
                 </div>
                 """,
@@ -185,12 +205,10 @@ if st.button("🔍 Phân tích", type="primary", use_container_width=True):
             render_model_info(model_name, bundle.model)
 
         except (CheckpointMissingError, EnvironmentError_VnCoreNLP) as e:
-            progress_placeholder.empty()
             render_error(str(e))
         except Exception as e:
-            progress_placeholder.empty()
             render_error(f"Lỗi không xác định khi dự đoán: {e}")
-        else:
+        finally:
             progress_placeholder.empty()
 
 st.markdown("</div>", unsafe_allow_html=True)

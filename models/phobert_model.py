@@ -16,8 +16,11 @@ def load_phobert(
     """Load PhoBERT checkpoint, tokenizer, and optional inference config."""
     from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-    tokenizer = AutoTokenizer.from_pretrained(checkpoint_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(checkpoint_dir)
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint_dir, local_files_only=True)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        checkpoint_dir,
+        local_files_only=True,
+    )
     model.to(device)
     model.eval()
 
@@ -70,4 +73,5 @@ def predict_phobert(text: str, bundle: ModelBundle) -> PredictionResult:
         probs={LABELS[i]: float(p) for i, p in enumerate(probs)},
         preprocessing_ms=(t1 - t0) * 1000,
         inference_ms=(t2 - t1) * 1000,
+        processed_text=result.cleaned_text,
     )

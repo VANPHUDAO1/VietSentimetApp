@@ -51,6 +51,9 @@ SAMPLE_SENTENCES = [
     {"label": "Teencode", "text": "Cô dạy hơi khó hiểu nma vẫn oke á ạ."},
 ]
 
+POPUP_RENDER_FLUSH_SEC = 0.05
+POPUP_SUCCESS_CLOSE_SEC = 1.5
+
 LATENCY_WARNING_MS = {
     "cpu": 3000,
     "cuda": 500,

@@ -115,4 +115,5 @@ def predict_bilstm(text: str, bundle: ModelBundle) -> PredictionResult:
         probs={LABELS[i]: float(p) for i, p in enumerate(probs)},
         preprocessing_ms=(t1 - t0) * 1000,
         inference_ms=(t2 - t1) * 1000,
+        processed_text=result.cleaned_text,
     )

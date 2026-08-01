@@ -12,6 +12,15 @@ def render_result(result: PredictionResult, device: str):
 
     st.markdown(
         f"""
+        <div style="margin-bottom:1.2rem;padding:18px 20px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:22px;box-shadow:0 8px 20px rgba(15,23,42,0.04);">
+            <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:8px;">Văn bản sau tiền xử lý thô</div>
+            <div style="color:#334155;line-height:1.7;white-space:pre-wrap;word-break:break-word;">{result.processed_text}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"""
         <div class="result-card">
             <div class="result-label" style="color:{color};">{label_vi}</div>
             <div class="result-meta">Độ tin cậy: <strong>{result.confidence:.1%}</strong></div>
