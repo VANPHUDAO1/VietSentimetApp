@@ -3,6 +3,10 @@ checkpoints/**/*.pt
 checkpoints/**/*.bin
 checkpoints/**/*.safetensors
 checkpoints/**/tokenizer/
+checkpoints/**/added_tokens.json
+checkpoints/**/bpe.codes
+checkpoints/**/tokenizer_config.json
+checkpoints/**/vocab.txt
 checkpoints/**/vocab.json
 checkpoints/**/config.json
 checkpoints/**/inference_config.json
